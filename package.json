@@ -1,0 +1,20 @@
+{
+  "name": "zxtabs",
+  "version": "0.2.1",
+  "private": true,
+  "description": "Chrome/Edge extension that re-renders Ultimate Guitar tabs full screen in a dark multi-column layout.",
+  "license": "MIT",
+  "repository": "github:zdhoward/zxtabs",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "watch": "vite build --watch",
+    "typecheck": "tsc --noEmit",
+    "package": "vite build && node scripts/package.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  }
+}

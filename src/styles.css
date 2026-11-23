@@ -1,0 +1,115 @@
+:host {
+  --bg: oklch(0.165 0.006 260);
+  --bg-raise: oklch(0.205 0.007 260);
+  --bg-hover: oklch(0.245 0.008 260);
+  --rule: oklch(0.27 0.008 260);
+  --text: oklch(0.91 0.008 85);
+  --text-dim: oklch(0.68 0.01 260);
+  --text-faint: oklch(0.6 0.01 260);
+  --chord: oklch(0.82 0.135 72);
+  --chord-soft: oklch(0.82 0.135 72 / 0.14);
+  --danger: oklch(0.7 0.16 25);
+  --danger-soft: oklch(0.7 0.16 25 / 0.14);
+  --focus: oklch(0.82 0.135 72 / 0.6);
+  --sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --gap: 44px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; margin: 0 }
+:host { all: initial }
+/* Above everything UG draws (sticky header, ads, players); the page itself is also hidden. */
+.zx { position: fixed; inset: 0; z-index: 2147483646; background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; color-scheme: dark }
+::selection { background: var(--chord-soft); color: var(--chord) }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer }
+input { font: inherit; color: inherit }
+svg { display: block }
+::-webkit-scrollbar { height: 8px; width: 8px }
+::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 8px }
+::-webkit-scrollbar-track { background: transparent }
+* { scrollbar-color: var(--rule) transparent }
+@media (prefers-reduced-motion: reduce) { * { transition-duration: 0s !important; animation-duration: 0s !important } }
+
+/* ---------- shared controls ---------- */
+.ib { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 8px; color: var(--text-dim); transition: background .15s, color .15s }
+.ib:hover { background: var(--bg-hover); color: var(--text) }
+.ib:active { scale: .94 }
+.ib:disabled { opacity: .35; pointer-events: none }
+.tog { height: 30px; padding: 0 10px; border-radius: 8px; color: var(--text-dim); transition: background .15s, color .15s }
+.tog:hover { background: var(--bg-hover); color: var(--text) }
+.tog[aria-pressed="true"] { background: var(--chord-soft); color: var(--chord) }
+.tog:disabled { opacity: .35; pointer-events: none }
+.btn { height: 34px; padding: 0 14px; border-radius: 9px; background: var(--bg-raise); color: var(--text); transition: background .15s }
+.btn:hover { background: var(--bg-hover) }
+.btn.danger { background: var(--danger-soft); color: var(--danger) }
+.btn.danger:hover { background: oklch(0.7 0.16 25 / 0.22) }
+
+/* ---------- reader ---------- */
+.reader { position: fixed; inset: 0; overflow: hidden }
+.sheet {
+  position: absolute; inset: 0;
+  padding: 30px 36px 26px;
+  /* JetBrains Mono joins "|-" and "--" into ligatures, which breaks tab staffs. */
+  font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0;
+  column-fill: auto; column-gap: var(--gap); column-rule: 1px solid var(--rule);
+  overflow-x: auto; overflow-y: hidden;
+  font-family: var(--mono); line-height: 1.38;
+}
+/* focused only so arrow keys scroll it; an outline would draw a line along its edge */
+.sheet:focus { outline: none }
+.song-head { break-inside: avoid; margin-bottom: 1.6em }
+.song-head h1 { font-family: var(--sans); font-size: 1.9em; font-weight: 600; letter-spacing: -0.025em; line-height: 1.1; text-wrap: balance }
+.song-head .by { font-family: var(--sans); color: var(--text-dim); font-size: 1.05em; margin-top: .2em }
+.meta { display: flex; flex-wrap: wrap; gap: .4em 1.2em; margin-top: .8em; font-size: .82em; color: var(--text-faint) }
+.meta b { color: var(--text-dim); font-weight: 400 }
+.meta a { color: var(--text-faint); text-underline-offset: 3px }
+.meta a:hover { color: var(--chord) }
+.sec { break-inside: avoid-column }
+.sec-label { font-family: var(--sans); font-size: .72em; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--text-faint); margin: 1.3em 0 .45em; break-after: avoid }
+.sec:first-of-type .sec-label { margin-top: 0 }
+.block { break-inside: avoid; white-space: pre }
+.ln { display: block; min-height: 1.38em }
+.ch { color: var(--chord); font-weight: 600 }
+.gap { height: .7em }
+.rest { color: var(--text-dim); font-size: .92em; margin: .3em 0 .6em }
+.rest .ch { font-weight: 400 }
+.tabs-head { break-after: avoid; font-family: var(--sans); font-size: .95em; font-weight: 600; letter-spacing: -0.01em; color: var(--text-dim); border-top: 1px solid var(--rule); padding-top: .9em; margin-top: 1.8em }
+.song-head + .tabs-head { border-top: 0; padding-top: 0; margin-top: 0 }
+.note { font-family: var(--sans); color: var(--text-faint) }
+
+/* ---------- toolbar ---------- */
+.bar {
+  position: fixed; bottom: 16px; right: 16px; z-index: 5;
+  display: flex; align-items: center; gap: 4px; padding: 5px; border-radius: 12px;
+  background: oklch(0.21 0.007 260 / 0.94); border: 1px solid var(--rule);
+  box-shadow: 0 8px 28px oklch(0 0 0 / 0.45); font-size: 13px;
+  transition: opacity .45s var(--ease), translate .45s var(--ease);
+}
+.idle .bar { opacity: 0; translate: 0 6px; pointer-events: none }
+.idle { cursor: none }
+.grp { display: flex; align-items: center; gap: 2px; padding: 0 4px }
+.grp + .grp { border-left: 1px solid var(--rule); padding-left: 8px; margin-left: 4px }
+.lbl { color: var(--text-faint); font-size: 12px; margin-right: 4px }
+.val { min-width: 34px; text-align: center; font-variant-numeric: tabular-nums; font-weight: 500 }
+
+
+/* ---------- launcher (on the UG page) ---------- */
+.launch {
+  position: fixed; right: 20px; bottom: 20px; z-index: 2147483646;
+  display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px 0 13px;
+  border-radius: 12px; background: oklch(0.21 0.007 260); color: var(--chord); border: 1px solid var(--rule);
+  font: 500 14px var(--sans); box-shadow: 0 8px 28px oklch(0 0 0 / 0.4); transition: background .15s, translate .2s var(--ease);
+}
+.launch[hidden] { display: none }
+.launch:hover { background: oklch(0.25 0.008 260); translate: 0 -1px }
+.launch kbd { font: 11px var(--mono); padding: 1px 5px; border: 1px solid var(--rule); border-radius: 4px; color: var(--text-faint) }
+.toast {
+  position: fixed; right: 20px; bottom: 72px; z-index: 2147483647; max-width: 360px; padding: 10px 14px;
+  border-radius: 10px; background: var(--bg-raise); color: var(--text); border: 1px solid var(--rule);
+  font: 14px/1.4 var(--sans); box-shadow: 0 8px 28px oklch(0 0 0 / 0.4); animation: toast-in .2s var(--ease);
+}
+@keyframes toast-in { from { opacity: 0; translate: 0 6px } }
+@media (prefers-reduced-motion: reduce) { .toast { animation: none } }
+.msg { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: var(--text-dim); font-size: 15px; padding: 24px }
